@@ -7,8 +7,10 @@ type Screen =
   | "companies"
   | "imata-loading"
   | "imata"
+  | "imata-section-loading"
   | "dluxe-loading"
-  | "dluxe";
+  | "dluxe"
+  | "dluxe-section-loading";
 
 type Section =
   | "home"
@@ -133,7 +135,8 @@ const dluxeData = {
   phoneHref: "tel:+94777637240",
   whatsappHref: "https://wa.me/94777637240",
   email: "info@dluxerealtors.com",
-  address: "No. 11, St. Stephen’s Mawatha, Rajagiriya Road, Rajagiriya",
+  address:
+    "No. 11, St. Stephen’s Mawatha, Rajagiriya Road, Rajagiriya",
   yearEstablished: "2025",
   facebook: "D’Luxe Realtors",
   instagram: "D’Luxe Realtors",
@@ -248,85 +251,171 @@ const dluxeExpertise = [
 
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("loading");
-  const [section, setSection] = useState<Section>("home");
+
+  const [section, setSection] =
+    useState<Section>("home");
+
   const [dluxeSection, setDluxeSection] =
     useState<DluxeSection>("home");
-  const [quoteOpen, setQuoteOpen] = useState(false);
+
+  const [pendingImataSection, setPendingImataSection] =
+    useState<Section>("home");
+
+  const [pendingDluxeSection, setPendingDluxeSection] =
+    useState<DluxeSection>("home");
+
+  const [quoteOpen, setQuoteOpen] =
+    useState(false);
+
   const [sectionTransition, setSectionTransition] =
     useState(false);
+
+  /* =========================================================
+     LOADING / PAGE TRANSITIONS
+  ========================================================= */
 
   useEffect(() => {
     if (
       screen !== "loading" &&
       screen !== "imata-loading" &&
-      screen !== "dluxe-loading"
+      screen !== "imata-section-loading" &&
+      screen !== "dluxe-loading" &&
+      screen !== "dluxe-section-loading"
     ) {
       return;
     }
 
     const timer = window.setTimeout(() => {
+      /* MAIN LOADER → COMPANY SELECTION */
       if (screen === "loading") {
         setScreen("companies");
+        return;
       }
 
+      /* IMATA COMPANY LOADER → IMATA HOME */
       if (screen === "imata-loading") {
         setScreen("imata");
         setSection("home");
         window.scrollTo(0, 0);
+        return;
       }
 
+      /* IMATA SECTION LOADER → SELECTED SECTION */
+      if (screen === "imata-section-loading") {
+        setScreen("imata");
+        setSection(pendingImataSection);
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      /* D'LUXE COMPANY LOADER → D'LUXE HOME */
       if (screen === "dluxe-loading") {
         setScreen("dluxe");
+        setDluxeSection("home");
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      /* D'LUXE SECTION LOADER → SELECTED SECTION */
+      if (screen === "dluxe-section-loading") {
+        setScreen("dluxe");
+        setDluxeSection(pendingDluxeSection);
+        window.scrollTo(0, 0);
+        return;
       }
     }, 3000);
 
-    return () => window.clearTimeout(timer);
-  }, [screen]);
+    return () =>
+      window.clearTimeout(timer);
+  }, [
+    screen,
+    pendingImataSection,
+    pendingDluxeSection,
+  ]);
+
+  /* =========================================================
+     IMATA NAVIGATION
+  ========================================================= */
 
   const scrollToSection = (id: Section) => {
-    if (id === section) return;
+    if (id === section) {
+      return;
+    }
 
-    setSectionTransition(true);
-
-    window.setTimeout(() => {
-      setSection(id);
-
-      window.scrollTo({
-        top: 0,
-        behavior: "auto",
-      });
-
-      window.setTimeout(() => {
-        setSectionTransition(false);
-      }, 80);
-    }, 360);
+    setQuoteOpen(false);
+    setPendingImataSection(id);
+    setSectionTransition(false);
+    setScreen("imata-section-loading");
   };
 
-  const scrollToDluxeSection = (id: DluxeSection) => {
-    setDluxeSection(id);
+  /* =========================================================
+     D'LUXE NAVIGATION
+  ========================================================= */
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  const scrollToDluxeSection = (
+    id: DluxeSection,
+  ) => {
+    if (id === dluxeSection) {
+      return;
+    }
+
+    setQuoteOpen(false);
+    setPendingDluxeSection(id);
+    setScreen("dluxe-section-loading");
+  };
+
+  /* =========================================================
+     BACK BUTTONS
+  ========================================================= */
+
+  const backToImataMenu = () => {
+    setQuoteOpen(false);
+    setSectionTransition(false);
+    setScreen("imata-loading");
+  };
+
+  const backToDluxeMenu = () => {
+    setQuoteOpen(false);
+    setScreen("dluxe-loading");
   };
 
   const backToCompanies = () => {
     setQuoteOpen(false);
+    setSectionTransition(false);
     setScreen("loading");
   };
 
-  const submitQuote = (event: FormEvent<HTMLFormElement>) => {
+  /* =========================================================
+     QUOTE FORM
+  ========================================================= */
+
+  const submitQuote = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     const form = event.currentTarget;
     const data = new FormData(form);
 
-    const name = String(data.get("name") || "");
-    const email = String(data.get("email") || "");
-    const phone = String(data.get("phone") || "");
-    const service = String(data.get("service") || "");
-    const message = String(data.get("message") || "");
+    const name = String(
+      data.get("name") || "",
+    );
+
+    const email = String(
+      data.get("email") || "",
+    );
+
+    const phone = String(
+      data.get("phone") || "",
+    );
+
+    const service = String(
+      data.get("service") || "",
+    );
+
+    const message = String(
+      data.get("message") || "",
+    );
 
     const subject = encodeURIComponent(
       `IMATA Get a Quote - ${name}`,
@@ -344,10 +433,16 @@ export default function Home() {
       `mailto:damitharch@gmail.com?subject=${subject}&body=${body}`;
   };
 
+  /* =========================================================
+     LOADING SCREEN
+  ========================================================= */
+
   if (
     screen === "loading" ||
     screen === "imata-loading" ||
-    screen === "dluxe-loading"
+    screen === "imata-section-loading" ||
+    screen === "dluxe-loading" ||
+    screen === "dluxe-section-loading"
   ) {
     return (
       <main className="loading-screen">
@@ -379,13 +474,19 @@ export default function Home() {
             </svg>
           </div>
 
-          {screen === "imata-loading" && (
+          {(
+            screen === "imata-loading" ||
+            screen === "imata-section-loading"
+          ) && (
             <div className="loading-company-title">
               IMATA Construction Engineering Pvt Ltd
             </div>
           )}
 
-          {screen === "dluxe-loading" && (
+          {(
+            screen === "dluxe-loading" ||
+            screen === "dluxe-section-loading"
+          ) && (
             <div className="loading-company-title">
               D&apos;Luxe Realtors
             </div>
@@ -395,6 +496,10 @@ export default function Home() {
     );
   }
 
+  /* =========================================================
+     COMPANY SELECTION
+  ========================================================= */
+
   if (screen === "companies") {
     return (
       <main className="company-selection">
@@ -403,10 +508,15 @@ export default function Home() {
 
         <div className="selection-container">
           <div className="selection-logo">
-            <img src="/logo.png" alt="D'Luxe Logo" />
+            <img
+              src="/logo.png"
+              alt="D'Luxe Logo"
+            />
           </div>
 
-          <div className="welcome-text">WELCOME TO</div>
+          <div className="welcome-text">
+            WELCOME TO
+          </div>
 
           <div className="company-options">
             <button
@@ -456,6 +566,10 @@ export default function Home() {
     );
   }
 
+  /* =========================================================
+     IMATA
+  ========================================================= */
+
   if (screen === "imata") {
     return (
       <main
@@ -463,10 +577,15 @@ export default function Home() {
       >
         <header className="imata-header">
           <div className="imata-header-inner">
+
             <button
               type="button"
               className="imata-back"
-              onClick={backToCompanies}
+              onClick={
+                section === "home"
+                  ? backToCompanies
+                  : backToImataMenu
+              }
             >
               <span>←</span>
               Back
@@ -480,6 +599,7 @@ export default function Home() {
               }
             >
               <strong>IMATA</strong>
+
               <small>
                 CONSTRUCTION ENGINEERING
               </small>
@@ -500,7 +620,9 @@ export default function Home() {
                   key={item}
                   type="button"
                   className={
-                    section === item ? "active" : ""
+                    section === item
+                      ? "active"
+                      : ""
                   }
                   onClick={() =>
                     scrollToSection(item)
@@ -514,7 +636,9 @@ export default function Home() {
             <button
               type="button"
               className="quote-button"
-              onClick={() => setQuoteOpen(true)}
+              onClick={() =>
+                setQuoteOpen(true)
+              }
             >
               Get a Quote <span>↗</span>
             </button>
@@ -526,9 +650,15 @@ export default function Home() {
             className="imata-section-transition"
             aria-hidden="true"
           >
-            <span>{section.toUpperCase()}</span>
+            <span>
+              {section.toUpperCase()}
+            </span>
           </div>
         )}
+
+        {/* =====================================================
+            IMATA HOME
+        ===================================================== */}
 
         <section
           id="home"
@@ -568,6 +698,10 @@ export default function Home() {
           </div>
         </section>
 
+        {/* =====================================================
+            LEGACY IMATA HOME
+        ===================================================== */}
+
         <section
           id="imata-legacy-home"
           className="imata-legacy-home imata-hero imata-home-premium"
@@ -580,6 +714,7 @@ export default function Home() {
               <span>
                 IMATA CONSTRUCTION ENGINEERING
               </span>
+
               <span>(PVT) LTD</span>
             </div>
 
@@ -629,6 +764,7 @@ export default function Home() {
           <div className="hero-bottom-info">
             <div className="hero-company-name">
               <span>DESIGN &amp; BUILD</span>
+
               <strong>
                 IMATA Construction Engineering Pvt
                 Ltd
@@ -636,7 +772,10 @@ export default function Home() {
             </div>
 
             <div className="hero-scroll-hint">
-              <span>SCROLL TO EXPLORE</span>
+              <span>
+                SCROLL TO EXPLORE
+              </span>
+
               <i>↓</i>
             </div>
           </div>
@@ -646,6 +785,10 @@ export default function Home() {
             MAINTENANCE
           </div>
         </section>
+
+        {/* =====================================================
+            ABOUT
+        ===================================================== */}
 
         <section
           id="about"
@@ -711,6 +854,10 @@ export default function Home() {
           </div>
         </section>
 
+        {/* =====================================================
+            SERVICES
+        ===================================================== */}
+
         <section
           id="services"
           className="content-section services-section"
@@ -720,24 +867,33 @@ export default function Home() {
           </div>
 
           <div className="services-grid">
-            {services.map((service, index) => (
-              <div
-                className="service-item"
-                key={service}
-              >
-                <span>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+            {services.map(
+              (service, index) => (
+                <div
+                  className="service-item"
+                  key={service}
+                >
+                  <span>
+                    {String(index + 1).padStart(
+                      2,
+                      "0",
+                    )}
+                  </span>
 
-                <h2>{service}</h2>
+                  <h2>{service}</h2>
 
-                <span className="service-arrow">
-                  ↗
-                </span>
-              </div>
-            ))}
+                  <span className="service-arrow">
+                    ↗
+                  </span>
+                </div>
+              ),
+            )}
           </div>
         </section>
+
+        {/* =====================================================
+            PROJECTS
+        ===================================================== */}
 
         <section
           id="projects"
@@ -748,36 +904,52 @@ export default function Home() {
           </div>
 
           <div className="project-grid">
-            {projects.map((project, index) => (
-              <article
-                className="project-card-imata"
-                key={project.title}
-              >
-                <div className="project-photo">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    loading="eager"
-                    decoding="async"
-                  />
+            {projects.map(
+              (project, index) => (
+                <article
+                  className="project-card-imata"
+                  key={project.title}
+                >
+                  <div className="project-photo">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      loading="eager"
+                      decoding="async"
+                    />
 
-                  <div className="project-number">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-                </div>
-
-                <div className="project-details">
-                  <div>
-                    <span>{project.category}</span>
-                    <h2>{project.title}</h2>
+                    <div className="project-number">
+                      {String(index + 1).padStart(
+                        2,
+                        "0",
+                      )}
+                    </div>
                   </div>
 
-                  <p>{project.location}</p>
-                </div>
-              </article>
-            ))}
+                  <div className="project-details">
+                    <div>
+                      <span>
+                        {project.category}
+                      </span>
+
+                      <h2>
+                        {project.title}
+                      </h2>
+                    </div>
+
+                    <p>
+                      {project.location}
+                    </p>
+                  </div>
+                </article>
+              ),
+            )}
           </div>
         </section>
+
+        {/* =====================================================
+            CLIENTS
+        ===================================================== */}
 
         <section
           id="clients"
@@ -815,6 +987,10 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {/* =====================================================
+            CONTACT
+        ===================================================== */}
 
         <section
           id="contact"
@@ -881,12 +1057,18 @@ export default function Home() {
             <button
               type="button"
               className="contact-quote-button"
-              onClick={() => setQuoteOpen(true)}
+              onClick={() =>
+                setQuoteOpen(true)
+              }
             >
               GET A QUOTE <span>↗</span>
             </button>
           </div>
         </section>
+
+        {/* =====================================================
+            FOOTER
+        ===================================================== */}
 
         <footer className="imata-footer">
           <span>
@@ -897,6 +1079,10 @@ export default function Home() {
             COLOMBO • SRI LANKA
           </span>
         </footer>
+
+        {/* =====================================================
+            QUOTE MODAL
+        ===================================================== */}
 
         {quoteOpen && (
           <div
@@ -986,14 +1172,16 @@ export default function Home() {
                       Select a service
                     </option>
 
-                    {services.map((service) => (
-                      <option
-                        key={service}
-                        value={service}
-                      >
-                        {service}
-                      </option>
-                    ))}
+                    {services.map(
+                      (service) => (
+                        <option
+                          key={service}
+                          value={service}
+                        >
+                          {service}
+                        </option>
+                      ),
+                    )}
                   </select>
                 </label>
 
@@ -1027,19 +1215,26 @@ export default function Home() {
     );
   }
 
+  /* =========================================================
+     D'LUXE REALTORS
+  ========================================================= */
+
   return (
     <main
       className={`dluxe-site dluxe-section-${dluxeSection}`}
     >
       {/* =====================================================
           D'LUXE HEADER
-          WhatsApp + Get a Quote added
       ===================================================== */}
 
       <header className="dluxe-header dluxe-fixed-header">
         <button
           type="button"
-          onClick={backToCompanies}
+          onClick={
+            dluxeSection === "home"
+              ? backToCompanies
+              : backToDluxeMenu
+          }
           className="dluxe-back"
         >
           <span>←</span>
@@ -1078,6 +1273,10 @@ export default function Home() {
           </a>
         </div>
       </header>
+
+      {/* =====================================================
+          D'LUXE HOME
+      ===================================================== */}
 
       <section
         id="dluxe-home"
@@ -1124,26 +1323,35 @@ export default function Home() {
                 ["company", "COMPANY INFO"],
                 ["contact", "CONTACT"],
               ] as [DluxeSection, string][]
-            ).map(([id, label], index) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() =>
-                  scrollToDluxeSection(id)
-                }
-              >
-                <span>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+            ).map(
+              ([id, label], index) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() =>
+                    scrollToDluxeSection(id)
+                  }
+                >
+                  <span>
+                    {String(index + 1).padStart(
+                      2,
+                      "0",
+                    )}
+                  </span>
 
-                {label}
+                  {label}
 
-                <i>↗</i>
-              </button>
-            ))}
+                  <i>↗</i>
+                </button>
+              ),
+            )}
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          ABOUT
+      ===================================================== */}
 
       <section
         id="about"
@@ -1164,8 +1372,11 @@ export default function Home() {
 
             <div className="dluxe-body-copy">
               <p>{dluxeData.about}</p>
+
               <p>{dluxeData.aboutTwo}</p>
+
               <p>{dluxeData.aboutThree}</p>
+
               <p>{dluxeData.aboutFour}</p>
 
               <blockquote>
@@ -1176,6 +1387,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          VISION
+      ===================================================== */}
 
       <section
         id="vision"
@@ -1190,7 +1405,9 @@ export default function Home() {
             <article>
               <span>VISION</span>
 
-              <h2>TRUST THAT LASTS.</h2>
+              <h2>
+                TRUST THAT LASTS.
+              </h2>
 
               <p>{dluxeData.vision}</p>
             </article>
@@ -1208,6 +1425,10 @@ export default function Home() {
         </div>
       </section>
 
+      {/* =====================================================
+          SERVICES
+      ===================================================== */}
+
       <section
         id="services"
         className="dluxe-section dluxe-purple-section"
@@ -1219,7 +1440,11 @@ export default function Home() {
 
           <div className="dluxe-services-list">
             {dluxeServices.map(
-              ([number, title, description]) => (
+              ([
+                number,
+                title,
+                description,
+              ]) => (
                 <article
                   key={number}
                   className="dluxe-service-row"
@@ -1228,7 +1453,10 @@ export default function Home() {
 
                   <div>
                     <h2>{title}</h2>
-                    <p>{description}</p>
+
+                    <p>
+                      {description}
+                    </p>
                   </div>
 
                   <i>↗</i>
@@ -1238,6 +1466,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          APPROACH
+      ===================================================== */}
 
       <section
         id="approach"
@@ -1269,10 +1501,9 @@ export default function Home() {
                   (item, index) => (
                     <div key={item}>
                       <span>
-                        {String(index + 1).padStart(
-                          2,
-                          "0",
-                        )}
+                        {String(
+                          index + 1,
+                        ).padStart(2, "0")}
                       </span>
 
                       <p>{item}</p>
@@ -1284,6 +1515,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          PORTFOLIO
+      ===================================================== */}
 
       <section
         id="portfolio"
@@ -1312,10 +1547,9 @@ export default function Home() {
               (item, index) => (
                 <article key={item}>
                   <span>
-                    {String(index + 1).padStart(
-                      2,
-                      "0",
-                    )}
+                    {String(
+                      index + 1,
+                    ).padStart(2, "0")}
                   </span>
 
                   <h3>{item}</h3>
@@ -1327,6 +1561,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          MANAGEMENT
+      ===================================================== */}
 
       <section
         id="management"
@@ -1358,10 +1596,9 @@ export default function Home() {
                   (item, index) => (
                     <div key={item}>
                       <span>
-                        {String(index + 1).padStart(
-                          2,
-                          "0",
-                        )}
+                        {String(
+                          index + 1,
+                        ).padStart(2, "0")}
                       </span>
 
                       <p>{item}</p>
@@ -1373,6 +1610,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          TEAM
+      ===================================================== */}
 
       <section
         id="team"
@@ -1389,14 +1630,18 @@ export default function Home() {
                 01
               </p>
 
-              <h2>{dluxeData.teamName}</h2>
+              <h2>
+                {dluxeData.teamName}
+              </h2>
 
               <p className="dluxe-team-role">
                 {dluxeData.teamRole}
               </p>
 
               <div className="dluxe-expertise">
-                <span>AREAS OF EXPERTISE</span>
+                <span>
+                  AREAS OF EXPERTISE
+                </span>
 
                 {dluxeExpertise.map(
                   (item) => (
@@ -1409,14 +1654,29 @@ export default function Home() {
             </div>
 
             <div className="dluxe-body-copy">
-              <p>{dluxeData.teamBioOne}</p>
-              <p>{dluxeData.teamBioTwo}</p>
-              <p>{dluxeData.teamBioThree}</p>
-              <p>{dluxeData.teamBioFour}</p>
+              <p>
+                {dluxeData.teamBioOne}
+              </p>
+
+              <p>
+                {dluxeData.teamBioTwo}
+              </p>
+
+              <p>
+                {dluxeData.teamBioThree}
+              </p>
+
+              <p>
+                {dluxeData.teamBioFour}
+              </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          COMPANY
+      ===================================================== */}
 
       <section
         id="company"
@@ -1430,46 +1690,72 @@ export default function Home() {
           <div className="dluxe-company-table">
             <div>
               <span>Company Name</span>
-              <strong>{dluxeData.name}</strong>
+              <strong>
+                {dluxeData.name}
+              </strong>
             </div>
 
             <div>
-              <span>Telephone / WhatsApp</span>
-              <strong>{dluxeData.phone}</strong>
+              <span>
+                Telephone / WhatsApp
+              </span>
+
+              <strong>
+                {dluxeData.phone}
+              </strong>
             </div>
 
             <div>
               <span>Office Address</span>
-              <strong>{dluxeData.address}</strong>
+
+              <strong>
+                {dluxeData.address}
+              </strong>
             </div>
 
             <div>
               <span>Email</span>
-              <strong>{dluxeData.email}</strong>
+
+              <strong>
+                {dluxeData.email}
+              </strong>
             </div>
 
             <div>
               <span>Website</span>
+
               <strong>—</strong>
             </div>
 
             <div>
               <span>Facebook</span>
-              <strong>{dluxeData.facebook}</strong>
+
+              <strong>
+                {dluxeData.facebook}
+              </strong>
             </div>
 
             <div>
               <span>Instagram</span>
-              <strong>{dluxeData.instagram}</strong>
+
+              <strong>
+                {dluxeData.instagram}
+              </strong>
             </div>
 
             <div>
-              <span>Business Registration</span>
+              <span>
+                Business Registration
+              </span>
+
               <strong>—</strong>
             </div>
 
             <div>
-              <span>Year Established</span>
+              <span>
+                Year Established
+              </span>
+
               <strong>
                 {dluxeData.yearEstablished}
               </strong>
@@ -1477,6 +1763,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          CONTACT
+      ===================================================== */}
 
       <section
         id="contact"
@@ -1494,14 +1784,20 @@ export default function Home() {
               <span>YOUR PLACE.</span>
             </h2>
 
-            <p>{dluxeData.tagline}</p>
+            <p>
+              {dluxeData.tagline}
+            </p>
           </div>
 
           <div className="dluxe-contact-grid">
             <div>
-              <small>CALL / WHATSAPP</small>
+              <small>
+                CALL / WHATSAPP
+              </small>
 
-              <a href={dluxeData.phoneHref}>
+              <a
+                href={dluxeData.phoneHref}
+              >
                 {dluxeData.phone}
               </a>
             </div>
@@ -1519,7 +1815,9 @@ export default function Home() {
             <div>
               <small>OFFICE</small>
 
-              <p>{dluxeData.address}</p>
+              <p>
+                {dluxeData.address}
+              </p>
             </div>
           </div>
 
@@ -1546,6 +1844,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          D'LUXE FOOTER
+      ===================================================== */}
 
       <footer className="dluxe-footer">
         <span>D&apos;LUXE REALTORS</span>
