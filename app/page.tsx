@@ -249,9 +249,11 @@ const dluxeExpertise = [
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("loading");
   const [section, setSection] = useState<Section>("home");
-  const [dluxeSection, setDluxeSection] = useState<DluxeSection>("home");
+  const [dluxeSection, setDluxeSection] =
+    useState<DluxeSection>("home");
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const [sectionTransition, setSectionTransition] = useState(false);
+  const [sectionTransition, setSectionTransition] =
+    useState(false);
 
   useEffect(() => {
     if (
@@ -288,6 +290,7 @@ export default function Home() {
 
     window.setTimeout(() => {
       setSection(id);
+
       window.scrollTo({
         top: 0,
         behavior: "auto",
@@ -354,7 +357,7 @@ export default function Home() {
         <div className="loading-center">
           <div className="logo-loader">
             <img
-              src="/Logo.png"
+              src="/logo.png"
               alt="D'Luxe Logo"
               className="main-logo"
             />
@@ -400,7 +403,7 @@ export default function Home() {
 
         <div className="selection-container">
           <div className="selection-logo">
-            <img src="/Logo.png" alt="D'Luxe Logo" />
+            <img src="/logo.png" alt="D'Luxe Logo" />
           </div>
 
           <div className="welcome-text">WELCOME TO</div>
@@ -409,9 +412,13 @@ export default function Home() {
             <button
               type="button"
               className="company-card"
-              onClick={() => setScreen("imata-loading")}
+              onClick={() =>
+                setScreen("imata-loading")
+              }
             >
-              <span className="company-card-number">01</span>
+              <span className="company-card-number">
+                01
+              </span>
 
               <span className="company-card-title">
                 IMATA Construction
@@ -427,9 +434,13 @@ export default function Home() {
             <button
               type="button"
               className="company-card"
-              onClick={() => setScreen("dluxe-loading")}
+              onClick={() =>
+                setScreen("dluxe-loading")
+              }
             >
-              <span className="company-card-number">02</span>
+              <span className="company-card-number">
+                02
+              </span>
 
               <span className="company-card-title">
                 D&apos;Luxe Realtors
@@ -447,7 +458,9 @@ export default function Home() {
 
   if (screen === "imata") {
     return (
-      <main className={`imata-site section-${section}`}>
+      <main
+        className={`imata-site section-${section}`}
+      >
         <header className="imata-header">
           <div className="imata-header-inner">
             <button
@@ -462,10 +475,14 @@ export default function Home() {
             <button
               type="button"
               className="imata-logo-text"
-              onClick={() => scrollToSection("home")}
+              onClick={() =>
+                scrollToSection("home")
+              }
             >
               <strong>IMATA</strong>
-              <small>CONSTRUCTION ENGINEERING</small>
+              <small>
+                CONSTRUCTION ENGINEERING
+              </small>
             </button>
 
             <nav className="imata-nav">
@@ -482,8 +499,12 @@ export default function Home() {
                 <button
                   key={item}
                   type="button"
-                  className={section === item ? "active" : ""}
-                  onClick={() => scrollToSection(item)}
+                  className={
+                    section === item ? "active" : ""
+                  }
+                  onClick={() =>
+                    scrollToSection(item)
+                  }
                 >
                   {item}
                 </button>
@@ -509,7 +530,10 @@ export default function Home() {
           </div>
         )}
 
-        <section id="home" className="imata-new-home">
+        <section
+          id="home"
+          className="imata-new-home"
+        >
           <div className="imata-home-simple-center">
             <h1 className="imata-home-company-reveal">
               IMATA CONSTRUCTION
@@ -533,7 +557,9 @@ export default function Home() {
                 <button
                   key={id}
                   type="button"
-                  onClick={() => scrollToSection(id)}
+                  onClick={() =>
+                    scrollToSection(id)
+                  }
                 >
                   {label}
                 </button>
@@ -551,7 +577,9 @@ export default function Home() {
 
           <div className="hero-content">
             <div className="hero-top-line">
-              <span>IMATA CONSTRUCTION ENGINEERING</span>
+              <span>
+                IMATA CONSTRUCTION ENGINEERING
+              </span>
               <span>(PVT) LTD</span>
             </div>
 
@@ -564,19 +592,24 @@ export default function Home() {
               <br />
               <span>WITH PRECISION.</span>
               <br />
-              <span>DELIVERING WITH CONFIDENCE.</span>
+              <span>
+                DELIVERING WITH CONFIDENCE.
+              </span>
             </h1>
 
             <p className="hero-copy">
-              Building, renovation, interiors and maintenance solutions
-              delivered with quality, safety and attention to detail.
+              Building, renovation, interiors and
+              maintenance solutions delivered with
+              quality, safety and attention to detail.
             </p>
 
             <div className="hero-actions">
               <button
                 type="button"
                 className="hero-main-button"
-                onClick={() => scrollToSection("projects")}
+                onClick={() =>
+                  scrollToSection("projects")
+                }
               >
                 VIEW PROJECTS <span>→</span>
               </button>
@@ -584,7 +617,9 @@ export default function Home() {
               <button
                 type="button"
                 className="hero-outline-button"
-                onClick={() => setQuoteOpen(true)}
+                onClick={() =>
+                  setQuoteOpen(true)
+                }
               >
                 GET A QUOTE <span>↗</span>
               </button>
@@ -595,7 +630,8 @@ export default function Home() {
             <div className="hero-company-name">
               <span>DESIGN &amp; BUILD</span>
               <strong>
-                IMATA Construction Engineering Pvt Ltd
+                IMATA Construction Engineering Pvt
+                Ltd
               </strong>
             </div>
 
@@ -606,44 +642,54 @@ export default function Home() {
           </div>
 
           <div className="hero-side-label">
-            CONSTRUCTION • RENOVATION • INTERIORS • MAINTENANCE
+            CONSTRUCTION • RENOVATION • INTERIORS •
+            MAINTENANCE
           </div>
         </section>
 
-        <section id="about" className="content-section about-section">
+        <section
+          id="about"
+          className="content-section about-section"
+        >
           <div className="section-heading-only">
             ABOUT IMATA
           </div>
 
           <div className="about-text-center">
             <p>
-              IMATA Construction Engineering (Pvt) Ltd is a small,
-              independently owned Design and Build company based in Colombo,
-              Sri Lanka.
+              IMATA Construction Engineering (Pvt)
+              Ltd is a small, independently owned
+              Design and Build company based in
+              Colombo, Sri Lanka.
             </p>
 
             <p>
-              We specialize in construction, renovation, building interior
-              works and maintenance.
+              We specialize in construction,
+              renovation, building interior works and
+              maintenance.
             </p>
 
             <p>
-              We understand the challenges of construction, renovation,
-              building interior works and maintenance in order to provide a
-              hygienically sound space to live and work in an urban
-              environment.
+              We understand the challenges of
+              construction, renovation, building
+              interior works and maintenance in order
+              to provide a hygienically sound space to
+              live and work in an urban environment.
             </p>
 
             <p>
-              We add value by creating ideal outcomes for our clientele,
-              where they love the transformation of their property and
+              We add value by creating ideal outcomes
+              for our clientele, where they love the
+              transformation of their property and
               maximize the financial returns achieved.
             </p>
 
             <p>
-              Our philosophy of honesty and integrity ensures each project is
-              carried out with a focus on quality, innovation, sustainability,
-              safety and attention to detail.
+              Our philosophy of honesty and integrity
+              ensures each project is carried out with
+              a focus on quality, innovation,
+              sustainability, safety and attention to
+              detail.
             </p>
           </div>
 
@@ -675,8 +721,13 @@ export default function Home() {
 
           <div className="services-grid">
             {services.map((service, index) => (
-              <div className="service-item" key={service}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
+              <div
+                className="service-item"
+                key={service}
+              >
+                <span>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
 
                 <h2>{service}</h2>
 
@@ -737,8 +788,9 @@ export default function Home() {
           </div>
 
           <p className="clients-intro">
-            A selection of clients and project partners represented in the
-            IMATA company profile.
+            A selection of clients and project
+            partners represented in the IMATA company
+            profile.
           </p>
 
           <div className="clients-grid">
@@ -764,7 +816,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="contact-page">
+        <section
+          id="contact"
+          className="contact-page"
+        >
           <div className="simple-contact-heading">
             CONTACT
           </div>
@@ -846,7 +901,9 @@ export default function Home() {
         {quoteOpen && (
           <div
             className="quote-overlay"
-            onMouseDown={() => setQuoteOpen(false)}
+            onMouseDown={() =>
+              setQuoteOpen(false)
+            }
           >
             <div
               className="quote-modal"
@@ -857,7 +914,9 @@ export default function Home() {
               <button
                 type="button"
                 className="quote-close"
-                onClick={() => setQuoteOpen(false)}
+                onClick={() =>
+                  setQuoteOpen(false)
+                }
               >
                 ×
               </button>
@@ -868,7 +927,8 @@ export default function Home() {
                 <h2>Get a Quote</h2>
 
                 <p>
-                  Tell us about your project and we&apos;ll get back to you.
+                  Tell us about your project and
+                  we&apos;ll get back to you.
                 </p>
               </div>
 
@@ -919,7 +979,10 @@ export default function Home() {
                     defaultValue=""
                     required
                   >
-                    <option value="" disabled>
+                    <option
+                      value=""
+                      disabled
+                    >
                       Select a service
                     </option>
 
@@ -1026,7 +1089,7 @@ export default function Home() {
         <div className="dluxe-home-content">
           <div className="dluxe-home-logo">
             <img
-              src="/Logo.png"
+              src="/logo.png"
               alt="D'Luxe Realtors"
             />
           </div>
@@ -1044,7 +1107,8 @@ export default function Home() {
           </h1>
 
           <p className="dluxe-home-copy">
-            Connecting people with the right property opportunities.
+            Connecting people with the right
+            property opportunities.
           </p>
 
           <div className="dluxe-home-menu">
@@ -1093,7 +1157,8 @@ export default function Home() {
           <div className="dluxe-two-column">
             <div>
               <h2>
-                REAL ESTATE IS ABOUT MORE THAN PROPERTY.
+                REAL ESTATE IS ABOUT MORE THAN
+                PROPERTY.
               </h2>
             </div>
 
@@ -1104,7 +1169,8 @@ export default function Home() {
               <p>{dluxeData.aboutFour}</p>
 
               <blockquote>
-                “Connecting people with the right property opportunities.”
+                “Connecting people with the right
+                property opportunities.”
               </blockquote>
             </div>
           </div>
@@ -1124,9 +1190,7 @@ export default function Home() {
             <article>
               <span>VISION</span>
 
-              <h2>
-                TRUST THAT LASTS.
-              </h2>
+              <h2>TRUST THAT LASTS.</h2>
 
               <p>{dluxeData.vision}</p>
             </article>
@@ -1205,7 +1269,10 @@ export default function Home() {
                   (item, index) => (
                     <div key={item}>
                       <span>
-                        {String(index + 1).padStart(2, "0")}
+                        {String(index + 1).padStart(
+                          2,
+                          "0",
+                        )}
                       </span>
 
                       <p>{item}</p>
@@ -1235,8 +1302,8 @@ export default function Home() {
             </h2>
 
             <p>
-              Property categories represented in the
-              D&apos;luxe Realtors portfolio.
+              Property categories represented in
+              the D&apos;luxe Realtors portfolio.
             </p>
           </div>
 
@@ -1245,7 +1312,10 @@ export default function Home() {
               (item, index) => (
                 <article key={item}>
                   <span>
-                    {String(index + 1).padStart(2, "0")}
+                    {String(index + 1).padStart(
+                      2,
+                      "0",
+                    )}
                   </span>
 
                   <h3>{item}</h3>
@@ -1288,7 +1358,10 @@ export default function Home() {
                   (item, index) => (
                     <div key={item}>
                       <span>
-                        {String(index + 1).padStart(2, "0")}
+                        {String(index + 1).padStart(
+                          2,
+                          "0",
+                        )}
                       </span>
 
                       <p>{item}</p>
@@ -1397,7 +1470,9 @@ export default function Home() {
 
             <div>
               <span>Year Established</span>
-              <strong>{dluxeData.yearEstablished}</strong>
+              <strong>
+                {dluxeData.yearEstablished}
+              </strong>
             </div>
           </div>
         </div>
@@ -1434,7 +1509,9 @@ export default function Home() {
             <div>
               <small>EMAIL</small>
 
-              <a href={`mailto:${dluxeData.email}`}>
+              <a
+                href={`mailto:${dluxeData.email}`}
+              >
                 {dluxeData.email}
               </a>
             </div>
@@ -1461,7 +1538,9 @@ export default function Home() {
               GET A QUOTE <span>→</span>
             </a>
 
-            <a href={`mailto:${dluxeData.email}`}>
+            <a
+              href={`mailto:${dluxeData.email}`}
+            >
               EMAIL US <span>↗</span>
             </a>
           </div>
