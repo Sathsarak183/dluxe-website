@@ -1,69 +1,1484 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
+
+type Screen =
+  | "loading"
+  | "companies"
+  | "imata-loading"
+  | "imata"
+  | "dluxe-loading"
+  | "dluxe";
+
+type Section =
+  | "home"
+  | "about"
+  | "services"
+  | "projects"
+  | "clients"
+  | "contact";
+
+type DluxeSection =
+  | "home"
+  | "about"
+  | "vision"
+  | "services"
+  | "approach"
+  | "portfolio"
+  | "management"
+  | "team"
+  | "company"
+  | "contact";
+
+const projects = [
+  {
+    title: "Analytical Instruments Ltd",
+    category: "Interior & Civil Works",
+    location: "100, Elvitigala Road, Colombo 08",
+    image: "/imata-project/analytical-instruments-01.jpg",
+  },
+  {
+    title: "One Galle Face",
+    category: "Renovations",
+    location: "Colombo, Sri Lanka",
+    image: "/imata-project/one-galle-face-01.jpg",
+  },
+  {
+    title: "Shangri-La Residence",
+    category: "Renovations",
+    location: "Colombo, Sri Lanka",
+    image: "/imata-project/shangri-la-residence-01.jpg",
+  },
+  {
+    title: "TITP - Colombo",
+    category: "Renovations",
+    location: "Technical Junction, Colombo",
+    image: "/imata-project/titp-colombo-01.jpg",
+  },
+  {
+    title: "CPSTL",
+    category: "Renovations",
+    location: "Kolonnawa Installation, Colombo",
+    image: "/imata-project/cpstl-kolonnawa-01.jpg",
+  },
+  {
+    title: "Mr. Bagya Fernando's Residence",
+    category: "Civil Construction Works",
+    location: "Wattala, Sri Lanka",
+    image: "/imata-project/bagya-fernando-residence-01.jpg",
+  },
+  {
+    title: "Hendric Tea Stores",
+    category: "Renovations",
+    location: "Pettah, Colombo",
+    image: "/imata-project/hendric-tea-stores-01.jpg",
+  },
+  {
+    title: "Mr. Priyanath's Residence",
+    category: "Civil Construction Works",
+    location: "Piliyandala, Sri Lanka",
+    image: "/imata-project/priyanath-residence-01.jpg",
+  },
+];
+
+const clients = [
+  {
+    name: "Shangri-La Hotel",
+    logo: "/imata-client-logos/shangri-la-hotel.png",
+  },
+  {
+    name: "TRI-ZEN",
+    logo: "/imata-client-logos/tri-zen.png",
+  },
+  {
+    name: "One Galle Face",
+    logo: "/imata-client-logos/one-galle-face.png",
+  },
+  {
+    name: "Hendrick's Tea Stores",
+    logo: "/imata-client-logos/hendricks-tea-stores.png",
+  },
+  {
+    name: "Analytical Instruments Ltd",
+    logo: "/imata-client-logos/analytical-instruments.png",
+  },
+  {
+    name: "Client Logo",
+    logo: "/imata-client-logos/client-center-lanka.png",
+  },
+  {
+    name: "Alpha",
+    logo: "/imata-client-logos/alpha.png",
+  },
+];
+
+const services = [
+  "Building Construction Works",
+  "Renovation",
+  "Building Interior Works",
+  "Maintenance",
+  "Electrical Works",
+  "Plumbing Works",
+  "QS Works & Costing",
+];
+
+/* =========================================================
+   D'LUXE REALTORS
+========================================================= */
+
+const dluxeData = {
+  name: "D’luxe Realtors",
+  tagline: "Property. Expertise. Trust.",
+  phone: "0777 637 240",
+  phoneHref: "tel:+94777637240",
+  whatsappHref: "https://wa.me/94777637240",
+  email: "info@dluxerealtors.com",
+  address: "No. 11, St. Stephen’s Mawatha, Rajagiriya Road, Rajagiriya",
+  yearEstablished: "2025",
+  facebook: "D’Luxe Realtors",
+  instagram: "D’Luxe Realtors",
+
+  about:
+    "D’luxe Realtors is a professional real estate company dedicated to helping individuals, families, property owners and investors navigate the property market with confidence.",
+
+  aboutTwo:
+    "We provide a comprehensive range of real estate services, including property brokering, sales and rentals, property management, property marketing and property advisory and sourcing services. Our approach is built on understanding each client’s unique requirements and delivering solutions that are practical, transparent and tailored to their needs.",
+
+  aboutThree:
+    "At D’luxe Realtors, we believe that real estate is more than simply buying, selling or renting a property. It is about building trust, protecting our clients’ interests and creating long-term value.",
+
+  aboutFour:
+    "With a commitment to professionalism, personalised service and market-focused solutions, we strive to make every property transaction a smooth and rewarding experience.",
+
+  vision:
+    "To become a leading and trusted real estate brand, recognized for excellence, integrity and lasting value in every property relationship we build.",
+
+  mission:
+    "To deliver reliable, personalised and professional real estate services while creating meaningful opportunities for property owners, buyers, tenants and investors through trust, expertise and long-term relationships.",
+
+  approachIntro:
+    "We believe that every client and every property is different. Our approach focuses on listening carefully, understanding individual requirements and providing clear, practical guidance throughout the process.",
+
+  managementIntro:
+    "Our property management service is designed to give property owners greater convenience and confidence while their investments are being managed. We can coordinate key day-to-day requirements and act as a professional point of contact between owners, tenants and relevant service providers.",
+
+  teamName: "Mr. Dhanusha Perera",
+  teamRole: "Manager – Sales & Marketing",
+
+  teamBioOne:
+    "With over a decade of experience in the sales industry, Dhanusha Perera brings extensive expertise in sales, customer relationship management and client engagement to D’luxe Realtors.",
+
+  teamBioTwo:
+    "His strong customer-handling skills and customer-oriented mindset have been central to his professional journey. He places great emphasis on understanding clients’ requirements, building lasting relationships and providing solutions that are aligned with their individual needs.",
+
+  teamBioThree:
+    "At D’luxe Realtors, Dhanusha oversees sales and marketing, bringing his wealth of industry experience to property sales, leasing, client consultation and business development. His professional approach, communication skills and commitment to customer satisfaction support the company’s vision of delivering a trusted and seamless real estate experience.",
+
+  teamBioFour:
+    "He holds a Master of Business Administration (MBA) with Distinction in Marketing from Wrexham University, UK, complementing his extensive practical experience in sales and marketing.",
+};
+
+const dluxeServices = [
+  [
+    "01",
+    "Property Brokering",
+    "Professional assistance in connecting property owners and prospective buyers or tenants.",
+  ],
+  [
+    "02",
+    "Property Sales & Purchases",
+    "Support throughout the property transaction process, from property matching and negotiations to completion.",
+  ],
+  [
+    "03",
+    "Property Rentals & Leasing",
+    "Helping property owners find suitable tenants and helping clients find properties that meet their requirements.",
+  ],
+  [
+    "04",
+    "Property Management",
+    "Ongoing coordination and oversight to help property owners maintain and manage their investments efficiently.",
+  ],
+  [
+    "05",
+    "Property Marketing",
+    "Strategic presentation and promotion of properties to reach suitable prospective clients.",
+  ],
+  [
+    "06",
+    "Property Advisory & Sourcing",
+    "Assistance in identifying suitable property opportunities based on client requirements and objectives.",
+  ],
+];
+
+const dluxeApproach = [
+  "Personalised attention to every client",
+  "Clear and transparent communication",
+  "Professional property presentation and marketing",
+  "Focused matching of properties with client requirements",
+  "Support throughout the transaction and beyond",
+  "Building long-term relationships based on trust",
+];
+
+const dluxePortfolio = [
+  "Residential Properties",
+  "Apartments",
+  "Lands",
+  "Commercial Properties",
+  "Luxury / Investment Properties",
+];
+
+const dluxeManagement = [
+  "Tenant coordination",
+  "Rent and lease administration",
+  "Maintenance and repair coordination",
+  "Property inspections",
+  "Tenant sourcing and property marketing",
+  "General property oversight",
+];
+
+const dluxeExpertise = [
+  "Sales & Marketing",
+  "Customer Relationship Management",
+  "Client Consultation & Handling",
+  "Property Sales & Leasing",
+  "Negotiation & Business Development",
+  "Customer-Centric Sales Strategies",
+];
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+  const [screen, setScreen] = useState<Screen>("loading");
+  const [section, setSection] = useState<Section>("home");
+  const [dluxeSection, setDluxeSection] = useState<DluxeSection>("home");
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [sectionTransition, setSectionTransition] = useState(false);
+
+  useEffect(() => {
+    if (
+      screen !== "loading" &&
+      screen !== "imata-loading" &&
+      screen !== "dluxe-loading"
+    ) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (screen === "loading") {
+        setScreen("companies");
+      }
+
+      if (screen === "imata-loading") {
+        setScreen("imata");
+        setSection("home");
+        window.scrollTo(0, 0);
+      }
+
+      if (screen === "dluxe-loading") {
+        setScreen("dluxe");
+      }
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, [screen]);
+
+  const scrollToSection = (id: Section) => {
+    if (id === section) return;
+
+    setSectionTransition(true);
+
+    window.setTimeout(() => {
+      setSection(id);
+      window.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+
+      window.setTimeout(() => {
+        setSectionTransition(false);
+      }, 80);
+    }, 360);
+  };
+
+  const scrollToDluxeSection = (id: DluxeSection) => {
+    setDluxeSection(id);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const backToCompanies = () => {
+    setQuoteOpen(false);
+    setScreen("loading");
+  };
+
+  const submitQuote = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    const name = String(data.get("name") || "");
+    const email = String(data.get("email") || "");
+    const phone = String(data.get("phone") || "");
+    const service = String(data.get("service") || "");
+    const message = String(data.get("message") || "");
+
+    const subject = encodeURIComponent(
+      `IMATA Get a Quote - ${name}`,
+    );
+
+    const body = encodeURIComponent(
+      `Name: ${name}\n` +
+        `Email: ${email}\n` +
+        `Phone: ${phone}\n` +
+        `Service: ${service}\n\n` +
+        `Project Details:\n${message}`,
+    );
+
+    window.location.href =
+      `mailto:damitharch@gmail.com?subject=${subject}&body=${body}`;
+  };
+
+  if (
+    screen === "loading" ||
+    screen === "imata-loading" ||
+    screen === "dluxe-loading"
+  ) {
+    return (
+      <main className="loading-screen">
+        <div className="loading-glow loading-glow-one" />
+        <div className="loading-glow loading-glow-two" />
+
+        <div className="loading-center">
+          <div className="logo-loader">
+            <img
+              src="/Logo.png"
+              alt="D'Luxe Logo"
+              className="main-logo"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <svg
+              className="logo-border-animation"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <rect
+                className="logo-border-light"
+                x="2"
+                y="2"
+                width="96"
+                height="96"
+                pathLength="100"
+              />
+            </svg>
+          </div>
+
+          {screen === "imata-loading" && (
+            <div className="loading-company-title">
+              IMATA Construction Engineering Pvt Ltd
+            </div>
+          )}
+
+          {screen === "dluxe-loading" && (
+            <div className="loading-company-title">
+              D&apos;Luxe Realtors
+            </div>
+          )}
         </div>
       </main>
-    </div>
+    );
+  }
+
+  if (screen === "companies") {
+    return (
+      <main className="company-selection">
+        <div className="selection-glow selection-glow-one" />
+        <div className="selection-glow selection-glow-two" />
+
+        <div className="selection-container">
+          <div className="selection-logo">
+            <img src="/Logo.png" alt="D'Luxe Logo" />
+          </div>
+
+          <div className="welcome-text">WELCOME TO</div>
+
+          <div className="company-options">
+            <button
+              type="button"
+              className="company-card"
+              onClick={() => setScreen("imata-loading")}
+            >
+              <span className="company-card-number">01</span>
+
+              <span className="company-card-title">
+                IMATA Construction
+                <br />
+                Engineering Pvt Ltd
+              </span>
+
+              <span className="company-card-enter">
+                ENTER <span>→</span>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className="company-card"
+              onClick={() => setScreen("dluxe-loading")}
+            >
+              <span className="company-card-number">02</span>
+
+              <span className="company-card-title">
+                D&apos;Luxe Realtors
+              </span>
+
+              <span className="company-card-enter">
+                ENTER <span>→</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (screen === "imata") {
+    return (
+      <main className={`imata-site section-${section}`}>
+        <header className="imata-header">
+          <div className="imata-header-inner">
+            <button
+              type="button"
+              className="imata-back"
+              onClick={backToCompanies}
+            >
+              <span>←</span>
+              Back
+            </button>
+
+            <button
+              type="button"
+              className="imata-logo-text"
+              onClick={() => scrollToSection("home")}
+            >
+              <strong>IMATA</strong>
+              <small>CONSTRUCTION ENGINEERING</small>
+            </button>
+
+            <nav className="imata-nav">
+              {(
+                [
+                  "home",
+                  "about",
+                  "services",
+                  "projects",
+                  "clients",
+                  "contact",
+                ] as Section[]
+              ).map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={section === item ? "active" : ""}
+                  onClick={() => scrollToSection(item)}
+                >
+                  {item}
+                </button>
+              ))}
+            </nav>
+
+            <button
+              type="button"
+              className="quote-button"
+              onClick={() => setQuoteOpen(true)}
+            >
+              Get a Quote <span>↗</span>
+            </button>
+          </div>
+        </header>
+
+        {sectionTransition && (
+          <div
+            className="imata-section-transition"
+            aria-hidden="true"
+          >
+            <span>{section.toUpperCase()}</span>
+          </div>
+        )}
+
+        <section id="home" className="imata-new-home">
+          <div className="imata-home-simple-center">
+            <h1 className="imata-home-company-reveal">
+              IMATA CONSTRUCTION
+              <br />
+              ENGINEERING (PVT) LTD
+            </h1>
+
+            <nav
+              className="imata-center-section-menu"
+              aria-label="IMATA sections"
+            >
+              {(
+                [
+                  ["services", "SERVICES"],
+                  ["about", "ABOUT"],
+                  ["projects", "PROJECTS"],
+                  ["clients", "CLIENTS"],
+                  ["contact", "CONTACT"],
+                ] as [Section, string][]
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => scrollToSection(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </section>
+
+        <section
+          id="imata-legacy-home"
+          className="imata-legacy-home imata-hero imata-home-premium"
+        >
+          <div className="hero-background-image" />
+          <div className="hero-image-overlay" />
+
+          <div className="hero-content">
+            <div className="hero-top-line">
+              <span>IMATA CONSTRUCTION ENGINEERING</span>
+              <span>(PVT) LTD</span>
+            </div>
+
+            <p className="hero-kicker">
+              DESIGN &amp; BUILD • COLOMBO • SRI LANKA
+            </p>
+
+            <h1>
+              BUILDING
+              <br />
+              <span>WITH PRECISION.</span>
+              <br />
+              <span>DELIVERING WITH CONFIDENCE.</span>
+            </h1>
+
+            <p className="hero-copy">
+              Building, renovation, interiors and maintenance solutions
+              delivered with quality, safety and attention to detail.
+            </p>
+
+            <div className="hero-actions">
+              <button
+                type="button"
+                className="hero-main-button"
+                onClick={() => scrollToSection("projects")}
+              >
+                VIEW PROJECTS <span>→</span>
+              </button>
+
+              <button
+                type="button"
+                className="hero-outline-button"
+                onClick={() => setQuoteOpen(true)}
+              >
+                GET A QUOTE <span>↗</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="hero-bottom-info">
+            <div className="hero-company-name">
+              <span>DESIGN &amp; BUILD</span>
+              <strong>
+                IMATA Construction Engineering Pvt Ltd
+              </strong>
+            </div>
+
+            <div className="hero-scroll-hint">
+              <span>SCROLL TO EXPLORE</span>
+              <i>↓</i>
+            </div>
+          </div>
+
+          <div className="hero-side-label">
+            CONSTRUCTION • RENOVATION • INTERIORS • MAINTENANCE
+          </div>
+        </section>
+
+        <section id="about" className="content-section about-section">
+          <div className="section-heading-only">
+            ABOUT IMATA
+          </div>
+
+          <div className="about-text-center">
+            <p>
+              IMATA Construction Engineering (Pvt) Ltd is a small,
+              independently owned Design and Build company based in Colombo,
+              Sri Lanka.
+            </p>
+
+            <p>
+              We specialize in construction, renovation, building interior
+              works and maintenance.
+            </p>
+
+            <p>
+              We understand the challenges of construction, renovation,
+              building interior works and maintenance in order to provide a
+              hygienically sound space to live and work in an urban
+              environment.
+            </p>
+
+            <p>
+              We add value by creating ideal outcomes for our clientele,
+              where they love the transformation of their property and
+              maximize the financial returns achieved.
+            </p>
+
+            <p>
+              Our philosophy of honesty and integrity ensures each project is
+              carried out with a focus on quality, innovation, sustainability,
+              safety and attention to detail.
+            </p>
+          </div>
+
+          <div className="about-bottom">
+            <div>
+              <span>QUALITY</span>
+              <strong>01</strong>
+            </div>
+
+            <div>
+              <span>SAFETY</span>
+              <strong>02</strong>
+            </div>
+
+            <div>
+              <span>TRUST</span>
+              <strong>03</strong>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="services"
+          className="content-section services-section"
+        >
+          <div className="section-heading-only">
+            SERVICES
+          </div>
+
+          <div className="services-grid">
+            {services.map((service, index) => (
+              <div className="service-item" key={service}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+
+                <h2>{service}</h2>
+
+                <span className="service-arrow">
+                  ↗
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="projects"
+          className="content-section projects-section"
+        >
+          <div className="section-heading-only">
+            PROJECTS
+          </div>
+
+          <div className="project-grid">
+            {projects.map((project, index) => (
+              <article
+                className="project-card-imata"
+                key={project.title}
+              >
+                <div className="project-photo">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="eager"
+                    decoding="async"
+                  />
+
+                  <div className="project-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                </div>
+
+                <div className="project-details">
+                  <div>
+                    <span>{project.category}</span>
+                    <h2>{project.title}</h2>
+                  </div>
+
+                  <p>{project.location}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="clients"
+          className="content-section clients-section"
+        >
+          <div className="section-heading-only">
+            CLIENTS
+          </div>
+
+          <p className="clients-intro">
+            A selection of clients and project partners represented in the
+            IMATA company profile.
+          </p>
+
+          <div className="clients-grid">
+            {clients.map((client) => (
+              <article
+                className="client-card"
+                key={client.logo}
+              >
+                <div className="client-logo-wrap">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="client-logo"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="client-name">
+                  {client.name}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="contact" className="contact-page">
+          <div className="simple-contact-heading">
+            CONTACT
+          </div>
+
+          <div className="contact-details">
+            <div className="contact-block">
+              <small>ADDRESS</small>
+
+              <p>
+                #306, Rajagiriya Road,
+                <br />
+                Rajagiriya,
+                <br />
+                Sri Lanka.
+              </p>
+            </div>
+
+            <div className="contact-block">
+              <small>CALL US</small>
+
+              <a href="tel:+94707465761">
+                +94 70 746 5761
+              </a>
+
+              <a href="tel:+94712846098">
+                +94 71 284 6098
+              </a>
+
+              <a href="tel:+94112872350">
+                +94 11 287 2350
+              </a>
+            </div>
+
+            <div className="contact-block">
+              <small>EMAIL</small>
+
+              <a href="mailto:damitharch@gmail.com">
+                damitharch@gmail.com
+              </a>
+
+              <a href="mailto:damith@imata.lk">
+                damith@imata.lk
+              </a>
+            </div>
+          </div>
+
+          <div className="contact-actions">
+            <a
+              href="https://wa.me/94707465761"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="whatsapp-button"
+            >
+              <span>◉</span>
+              WHATSAPP US
+              <span>↗</span>
+            </a>
+
+            <button
+              type="button"
+              className="contact-quote-button"
+              onClick={() => setQuoteOpen(true)}
+            >
+              GET A QUOTE <span>↗</span>
+            </button>
+          </div>
+        </section>
+
+        <footer className="imata-footer">
+          <span>
+            IMATA CONSTRUCTION ENGINEERING (PVT) LTD
+          </span>
+
+          <span>
+            COLOMBO • SRI LANKA
+          </span>
+        </footer>
+
+        {quoteOpen && (
+          <div
+            className="quote-overlay"
+            onMouseDown={() => setQuoteOpen(false)}
+          >
+            <div
+              className="quote-modal"
+              onMouseDown={(event) =>
+                event.stopPropagation()
+              }
+            >
+              <button
+                type="button"
+                className="quote-close"
+                onClick={() => setQuoteOpen(false)}
+              >
+                ×
+              </button>
+
+              <div className="quote-header">
+                <span>IMATA</span>
+
+                <h2>Get a Quote</h2>
+
+                <p>
+                  Tell us about your project and we&apos;ll get back to you.
+                </p>
+              </div>
+
+              <form
+                className="quote-form"
+                onSubmit={submitQuote}
+              >
+                <div className="quote-row">
+                  <label>
+                    NAME
+
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="Your name"
+                    />
+                  </label>
+
+                  <label>
+                    PHONE
+
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="+94..."
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  EMAIL
+
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="your@email.com"
+                  />
+                </label>
+
+                <label>
+                  SERVICE
+
+                  <select
+                    name="service"
+                    defaultValue=""
+                    required
+                  >
+                    <option value="" disabled>
+                      Select a service
+                    </option>
+
+                    {services.map((service) => (
+                      <option
+                        key={service}
+                        value={service}
+                      >
+                        {service}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  PROJECT DETAILS
+
+                  <textarea
+                    name="message"
+                    rows={5}
+                    placeholder="Tell us briefly about your project..."
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  className="quote-submit"
+                >
+                  SEND REQUEST <span>→</span>
+                </button>
+
+                <p className="quote-email-note">
+                  Your request will open an email to
+                  <br />
+                  damitharch@gmail.com
+                </p>
+              </form>
+            </div>
+          </div>
+        )}
+      </main>
+    );
+  }
+
+  return (
+    <main
+      className={`dluxe-site dluxe-section-${dluxeSection}`}
+    >
+      {/* =====================================================
+          D'LUXE HEADER
+          WhatsApp + Get a Quote added
+      ===================================================== */}
+
+      <header className="dluxe-header dluxe-fixed-header">
+        <button
+          type="button"
+          onClick={backToCompanies}
+          className="dluxe-back"
+        >
+          <span>←</span>
+          Back
+        </button>
+
+        <div className="dluxe-header-brand">
+          <strong>D&apos;LUXE REALTORS</strong>
+
+          <small>
+            PROPERTY • EXPERTISE • TRUST
+          </small>
+        </div>
+
+        <div className="dluxe-header-actions">
+          <a
+            href={dluxeData.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="dluxe-header-contact dluxe-whatsapp-button"
+          >
+            <span className="whatsapp-dot">
+              ●
+            </span>
+
+            WhatsApp
+
+            <span>↗</span>
+          </a>
+
+          <a
+            href={`mailto:${dluxeData.email}?subject=Get%20a%20Quote`}
+            className="dluxe-quote-button"
+          >
+            Get a Quote <span>→</span>
+          </a>
+        </div>
+      </header>
+
+      <section
+        id="dluxe-home"
+        className="dluxe-section dluxe-home-section"
+      >
+        <div className="dluxe-home-glow dluxe-home-glow-one" />
+        <div className="dluxe-home-glow dluxe-home-glow-two" />
+
+        <div className="dluxe-home-content">
+          <div className="dluxe-home-logo">
+            <img
+              src="/Logo.png"
+              alt="D'Luxe Realtors"
+            />
+          </div>
+
+          <p className="dluxe-eyebrow">
+            REAL ESTATE • SRI LANKA • EST. 2025
+          </p>
+
+          <h1>
+            PROPERTY.
+            <br />
+            <span>EXPERTISE.</span>
+            <br />
+            TRUST.
+          </h1>
+
+          <p className="dluxe-home-copy">
+            Connecting people with the right property opportunities.
+          </p>
+
+          <div className="dluxe-home-menu">
+            {(
+              [
+                ["about", "ABOUT"],
+                ["vision", "VISION & MISSION"],
+                ["services", "SERVICES"],
+                ["approach", "OUR APPROACH"],
+                ["portfolio", "PROPERTY PORTFOLIO"],
+                ["management", "PROPERTY MANAGEMENT"],
+                ["team", "OUR TEAM"],
+                ["company", "COMPANY INFO"],
+                ["contact", "CONTACT"],
+              ] as [DluxeSection, string][]
+            ).map(([id, label], index) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() =>
+                  scrollToDluxeSection(id)
+                }
+              >
+                <span>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                {label}
+
+                <i>↗</i>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="about"
+        className="dluxe-section dluxe-about-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            01 / ABOUT D&apos;LUXE REALTORS
+          </div>
+
+          <div className="dluxe-two-column">
+            <div>
+              <h2>
+                REAL ESTATE IS ABOUT MORE THAN PROPERTY.
+              </h2>
+            </div>
+
+            <div className="dluxe-body-copy">
+              <p>{dluxeData.about}</p>
+              <p>{dluxeData.aboutTwo}</p>
+              <p>{dluxeData.aboutThree}</p>
+              <p>{dluxeData.aboutFour}</p>
+
+              <blockquote>
+                “Connecting people with the right property opportunities.”
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="vision"
+        className="dluxe-section dluxe-light-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            02 / OUR VISION &amp; MISSION
+          </div>
+
+          <div className="dluxe-vision-grid">
+            <article>
+              <span>VISION</span>
+
+              <h2>
+                TRUST THAT LASTS.
+              </h2>
+
+              <p>{dluxeData.vision}</p>
+            </article>
+
+            <article>
+              <span>MISSION</span>
+
+              <h2>
+                VALUE THROUGH EXPERTISE.
+              </h2>
+
+              <p>{dluxeData.mission}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="services"
+        className="dluxe-section dluxe-purple-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            03 / OUR SERVICES
+          </div>
+
+          <div className="dluxe-services-list">
+            {dluxeServices.map(
+              ([number, title, description]) => (
+                <article
+                  key={number}
+                  className="dluxe-service-row"
+                >
+                  <span>{number}</span>
+
+                  <div>
+                    <h2>{title}</h2>
+                    <p>{description}</p>
+                  </div>
+
+                  <i>↗</i>
+                </article>
+              ),
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="approach"
+        className="dluxe-section dluxe-light-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            04 / OUR APPROACH
+          </div>
+
+          <div className="dluxe-approach-grid">
+            <div>
+              <h2>
+                EVERY CLIENT.
+                <br />
+                <span>EVERY PROPERTY.</span>
+                <br />
+                DIFFERENT.
+              </h2>
+            </div>
+
+            <div>
+              <p className="dluxe-lead">
+                {dluxeData.approachIntro}
+              </p>
+
+              <div className="dluxe-check-list">
+                {dluxeApproach.map(
+                  (item, index) => (
+                    <div key={item}>
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <p>{item}</p>
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="portfolio"
+        className="dluxe-section dluxe-portfolio-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            06 / OUR PROPERTY PORTFOLIO
+          </div>
+
+          <div className="dluxe-portfolio-heading">
+            <h2>
+              FIND THE RIGHT
+              <br />
+              <span>OPPORTUNITY.</span>
+            </h2>
+
+            <p>
+              Property categories represented in the
+              D&apos;luxe Realtors portfolio.
+            </p>
+          </div>
+
+          <div className="dluxe-portfolio-grid">
+            {dluxePortfolio.map(
+              (item, index) => (
+                <article key={item}>
+                  <span>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <h3>{item}</h3>
+
+                  <i>↗</i>
+                </article>
+              ),
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="management"
+        className="dluxe-section dluxe-purple-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            07 / PROPERTY MANAGEMENT
+          </div>
+
+          <div className="dluxe-management-grid">
+            <div>
+              <h2>
+                GREATER
+                <br />
+                <span>CONVENIENCE.</span>
+                <br />
+                CONFIDENCE.
+              </h2>
+            </div>
+
+            <div>
+              <p className="dluxe-lead">
+                {dluxeData.managementIntro}
+              </p>
+
+              <div className="dluxe-check-list">
+                {dluxeManagement.map(
+                  (item, index) => (
+                    <div key={item}>
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <p>{item}</p>
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="team"
+        className="dluxe-section dluxe-light-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            08 / OUR TEAM
+          </div>
+
+          <div className="dluxe-team-grid">
+            <div>
+              <p className="dluxe-team-number">
+                01
+              </p>
+
+              <h2>{dluxeData.teamName}</h2>
+
+              <p className="dluxe-team-role">
+                {dluxeData.teamRole}
+              </p>
+
+              <div className="dluxe-expertise">
+                <span>AREAS OF EXPERTISE</span>
+
+                {dluxeExpertise.map(
+                  (item) => (
+                    <p key={item}>
+                      • {item}
+                    </p>
+                  ),
+                )}
+              </div>
+            </div>
+
+            <div className="dluxe-body-copy">
+              <p>{dluxeData.teamBioOne}</p>
+              <p>{dluxeData.teamBioTwo}</p>
+              <p>{dluxeData.teamBioThree}</p>
+              <p>{dluxeData.teamBioFour}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="company"
+        className="dluxe-section dluxe-company-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            09 / COMPANY INFORMATION
+          </div>
+
+          <div className="dluxe-company-table">
+            <div>
+              <span>Company Name</span>
+              <strong>{dluxeData.name}</strong>
+            </div>
+
+            <div>
+              <span>Telephone / WhatsApp</span>
+              <strong>{dluxeData.phone}</strong>
+            </div>
+
+            <div>
+              <span>Office Address</span>
+              <strong>{dluxeData.address}</strong>
+            </div>
+
+            <div>
+              <span>Email</span>
+              <strong>{dluxeData.email}</strong>
+            </div>
+
+            <div>
+              <span>Website</span>
+              <strong>—</strong>
+            </div>
+
+            <div>
+              <span>Facebook</span>
+              <strong>{dluxeData.facebook}</strong>
+            </div>
+
+            <div>
+              <span>Instagram</span>
+              <strong>{dluxeData.instagram}</strong>
+            </div>
+
+            <div>
+              <span>Business Registration</span>
+              <strong>—</strong>
+            </div>
+
+            <div>
+              <span>Year Established</span>
+              <strong>{dluxeData.yearEstablished}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        className="dluxe-section dluxe-contact-section"
+      >
+        <div className="dluxe-section-inner">
+          <div className="dluxe-section-label">
+            10 / CONTACT US
+          </div>
+
+          <div className="dluxe-contact-heading">
+            <h2>
+              LET&apos;S FIND
+              <br />
+              <span>YOUR PLACE.</span>
+            </h2>
+
+            <p>{dluxeData.tagline}</p>
+          </div>
+
+          <div className="dluxe-contact-grid">
+            <div>
+              <small>CALL / WHATSAPP</small>
+
+              <a href={dluxeData.phoneHref}>
+                {dluxeData.phone}
+              </a>
+            </div>
+
+            <div>
+              <small>EMAIL</small>
+
+              <a href={`mailto:${dluxeData.email}`}>
+                {dluxeData.email}
+              </a>
+            </div>
+
+            <div>
+              <small>OFFICE</small>
+
+              <p>{dluxeData.address}</p>
+            </div>
+          </div>
+
+          <div className="dluxe-contact-actions">
+            <a
+              href={dluxeData.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WHATSAPP US <span>↗</span>
+            </a>
+
+            <a
+              href={`mailto:${dluxeData.email}?subject=Get%20a%20Quote`}
+            >
+              GET A QUOTE <span>→</span>
+            </a>
+
+            <a href={`mailto:${dluxeData.email}`}>
+              EMAIL US <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer className="dluxe-footer">
+        <span>D&apos;LUXE REALTORS</span>
+
+        <span>
+          PROPERTY. EXPERTISE. TRUST.
+        </span>
+
+        <span>
+          RAJAGIRIYA • SRI LANKA
+        </span>
+      </footer>
+    </main>
   );
 }

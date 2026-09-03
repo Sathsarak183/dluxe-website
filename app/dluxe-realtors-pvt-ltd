@@ -1,0 +1,264 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
+export default function DluxeRealtorsPage() {
+  const router = useRouter();
+
+  const goBack = () => {
+    sessionStorage.setItem("playIntro", "true");
+    router.push("/");
+  };
+
+  return (
+    <main className="company-page">
+
+      <button className="back-button" onClick={goBack}>
+        <span>←</span>
+        Back
+      </button>
+
+      <div className="company-layout">
+
+        <aside className="company-sidebar">
+
+          <div className="sidebar-brand">
+            D'LUXE
+          </div>
+
+          <div className="sidebar-company">
+            <strong>
+              D'LUXE
+              <br />
+              REALTORS
+            </strong>
+
+            <small>PVT LTD</small>
+          </div>
+
+          <nav className="company-nav">
+
+            <a href="#overview" className="active">
+              Overview
+            </a>
+
+            <a href="#about">
+              About Company
+            </a>
+
+            <a href="#projects">
+              Projects
+            </a>
+
+            <a href="#clients">
+              Our Clients
+            </a>
+
+            <a href="#services">
+              How We Serve
+            </a>
+
+            <a href="#contact">
+              Contact Us
+            </a>
+
+          </nav>
+
+        </aside>
+
+        <section className="company-content">
+
+          <section id="overview" className="content-section hero-section">
+
+            <div className="section-label">
+              01 — OVERVIEW
+            </div>
+
+            <h1>
+              D'LUXE
+              <br />
+              <span>REALTORS PVT LTD</span>
+            </h1>
+
+            <p className="large-description">
+              Premium real estate solutions built around
+              trust, transparency and exceptional service.
+              D'LUXE Realtors helps clients find the right
+              property and make confident real estate decisions.
+            </p>
+
+          </section>
+
+          <section id="about" className="content-section">
+
+            <div className="section-label">
+              02 — ABOUT COMPANY
+            </div>
+
+            <h2>
+              Your property.
+              <br />
+              Our expertise.
+            </h2>
+
+            <p>
+              D'LUXE Realtors (Pvt) Ltd provides professional
+              real estate services with a strong focus on
+              customer satisfaction, transparency and
+              long-term relationships.
+            </p>
+
+          </section>
+
+          <section id="projects" className="content-section">
+
+            <div className="section-label">
+              03 — PROJECTS
+            </div>
+
+            <h2>
+              Properties
+              <br />
+              that matter.
+            </h2>
+
+            <div className="property-grid">
+
+              <div className="property-card">
+                <span>01</span>
+                <h3>Residential</h3>
+                <p>
+                  Premium homes and residential properties.
+                </p>
+              </div>
+
+              <div className="property-card">
+                <span>02</span>
+                <h3>Commercial</h3>
+                <p>
+                  Strategic commercial property opportunities.
+                </p>
+              </div>
+
+              <div className="property-card">
+                <span>03</span>
+                <h3>Land</h3>
+                <p>
+                  Carefully selected land opportunities.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
+          <section id="clients" className="content-section">
+
+            <div className="section-label">
+              04 — OUR CLIENTS
+            </div>
+
+            <h2>
+              Relationships
+              <br />
+              first.
+            </h2>
+
+            <p>
+              Every property journey is different. We focus
+              on understanding our clients and helping them
+              find the right solution.
+            </p>
+
+            <div className="stats">
+
+              <div>
+                <strong>8+</strong>
+                <span>Years Experience</span>
+              </div>
+
+              <div>
+                <strong>250+</strong>
+                <span>Properties Sold</span>
+              </div>
+
+              <div>
+                <strong>500+</strong>
+                <span>Happy Clients</span>
+              </div>
+
+              <div>
+                <strong>100%</strong>
+                <span>Trusted Service</span>
+              </div>
+
+            </div>
+
+          </section>
+
+          <section id="services" className="content-section">
+
+            <div className="section-label">
+              05 — HOW WE SERVE
+            </div>
+
+            <div className="service-grid">
+
+              <div className="service-card">
+                <span>01</span>
+                <h3>Property Search</h3>
+                <p>
+                  Helping you discover suitable properties.
+                </p>
+              </div>
+
+              <div className="service-card">
+                <span>02</span>
+                <h3>Property Sales</h3>
+                <p>
+                  Professional support throughout the sale.
+                </p>
+              </div>
+
+              <div className="service-card">
+                <span>03</span>
+                <h3>Real Estate Guidance</h3>
+                <p>
+                  Clear guidance for confident decisions.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
+          <section id="contact" className="content-section contact-section">
+
+            <div className="section-label">
+              06 — CONTACT US
+            </div>
+
+            <h2>
+              Find your
+              <br />
+              next address.
+            </h2>
+
+            <p>
+              Speak with the D'LUXE Realtors team about
+              your next property opportunity.
+            </p>
+
+            <button className="contact-button">
+              Contact Our Team →
+            </button>
+
+          </section>
+
+        </section>
+
+      </div>
+
+    </main>
+  );
+}

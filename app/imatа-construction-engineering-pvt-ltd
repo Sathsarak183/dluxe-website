@@ -1,0 +1,404 @@
+"use client";
+
+import Link from "next/link";
+import { FormEvent } from "react";
+
+const projects = [
+  {
+    image: "/imata-projects/project-01-analytical-instruments.jpg",
+    title: "Analytical Instruments",
+    type: "PROJECT",
+  },
+  {
+    image: "/imata-projects/project-02.jpg",
+    title: "Hotel & Resort Projects",
+    type: "PROJECT",
+  },
+  {
+    image: "/imata-projects/project-03.jpg",
+    title: "Commercial Development",
+    type: "PROJECT",
+  },
+  {
+    image: "/imata-projects/project-04.jpg",
+    title: "Architectural Development",
+    type: "PROJECT",
+  },
+];
+
+const services = [
+  "Architecture",
+  "Project Management",
+  "Interior Design",
+  "Landscape Design",
+  "Master Planning",
+  "Graphic Design",
+];
+
+function sendEmail(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+
+  const form = e.currentTarget;
+  const data = new FormData(form);
+
+  const name = String(data.get("name") || "");
+  const email = String(data.get("email") || "");
+  const mobile = String(data.get("mobile") || "");
+  const message = String(data.get("message") || "");
+
+  const subject = encodeURIComponent(`Website Enquiry - ${name}`);
+
+  const body = encodeURIComponent(
+    `Name: ${name}\n` +
+      `Email: ${email}\n` +
+      `Mobile: ${mobile}\n\n` +
+      `Message:\n${message}`
+  );
+
+  window.location.href =
+    `mailto:damith@imata.lk?subject=${subject}&body=${body}`;
+}
+
+export default function ImataPage() {
+  return (
+    <main className="imata-page">
+
+      {/* BACK BUTTON */}
+      <Link href="/" className="imata-back">
+        <span className="back-arrow">←</span>
+        <span>BACK</span>
+      </Link>
+
+      {/* WHATSAPP */}
+      <a
+        href="https://wa.me/94707465761"
+        target="_blank"
+        rel="noreferrer"
+        className="whatsapp-button"
+        aria-label="WhatsApp"
+      >
+        <span className="whatsapp-icon">◔</span>
+        <span>WHATSAPP</span>
+      </a>
+
+      {/* NAVIGATION */}
+      <nav className="imata-navigation">
+        <a href="#home">HOME</a>
+        <a href="#overview">ABOUT</a>
+        <a href="#services">SERVICES</a>
+        <a href="#projects">PROJECTS</a>
+        <a href="#contact">CONTACT</a>
+      </nav>
+
+      {/* HERO */}
+      <section id="home" className="imata-hero">
+
+        <div className="hero-image">
+          <img
+            src="/imata-projects/project-01-analytical-instruments.jpg"
+            alt="IMATA project"
+          />
+        </div>
+
+        <div className="hero-overlay" />
+
+        <div className="hero-content">
+          <span className="hero-small">
+            IMATA CONSTRUCTION ENGINEERING
+          </span>
+
+          <h1>
+            IMATA
+          </h1>
+
+          <p>
+            CONSTRUCTION ENGINEERING PVT LTD
+          </p>
+
+          <a href="#overview" className="hero-down">
+            ↓
+          </a>
+        </div>
+
+      </section>
+
+      {/* OVERVIEW */}
+      <section id="overview" className="simple-section overview-section">
+
+        <div className="section-top">
+          <span>01</span>
+          <p>ABOUT IMATA</p>
+        </div>
+
+        <div className="overview-grid">
+
+          <div>
+            <h2>
+              IMATA
+              <br />
+              <span>CONSTRUCTION</span>
+            </h2>
+          </div>
+
+          <div className="overview-copy">
+            <p className="overview-lead">
+              Architecture, construction and consultancy
+              for projects that are designed to last.
+            </p>
+
+            <p>
+              IMATA Construction Engineering provides
+              integrated architectural design, engineering
+              and consultancy services for construction
+              projects in Sri Lanka and abroad.
+            </p>
+
+            <p>
+              Our approach combines practical solutions,
+              creative design and professional project
+              management.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* SERVICES */}
+      <section id="services" className="services-section">
+
+        <div className="section-top">
+          <span>02</span>
+          <p>SERVICES</p>
+        </div>
+
+        <div className="services-header">
+          <h2>SERVICES</h2>
+
+          <p>
+            Complete design and consultancy services
+            for construction and development projects.
+          </p>
+        </div>
+
+        <div className="services-grid">
+
+          {services.map((service, index) => (
+            <div className="service-item" key={service}>
+              <span>0{index + 1}</span>
+
+              <h3>{service}</h3>
+
+              <div className="service-arrow">
+                ↗
+              </div>
+            </div>
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* PROJECTS */}
+      <section id="projects" className="projects-section">
+
+        <div className="section-top">
+          <span>03</span>
+          <p>PROJECTS</p>
+        </div>
+
+        <div className="projects-header">
+          <h2>PROJECTS</h2>
+
+          <p>
+            Selected work and developments by IMATA.
+          </p>
+        </div>
+
+        <div className="projects-grid">
+
+          {projects.map((project, index) => (
+            <article className="project-card" key={project.title}>
+
+              <div className="project-image">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                />
+
+                <div className="project-number">
+                  0{index + 1}
+                </div>
+              </div>
+
+              <div className="project-info">
+                <span>{project.type}</span>
+                <h3>{project.title}</h3>
+              </div>
+
+            </article>
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="contact-section">
+
+        <div className="section-top contact-top">
+          <span>04</span>
+          <p>CONTACT</p>
+        </div>
+
+        <div className="contact-layout">
+
+          {/* LEFT */}
+          <div className="contact-title">
+
+            <span>LET'S WORK TOGETHER</span>
+
+            <h2>
+              GET IN
+              <br />
+              <strong>TOUCH.</strong>
+            </h2>
+
+            <p>
+              Have a project in mind?
+              Get in touch with IMATA.
+            </p>
+
+          </div>
+
+          {/* RIGHT */}
+          <div className="contact-details">
+
+            <div className="contact-box">
+              <span>ADDRESS</span>
+
+              <p>
+                #306, Rajagiriya Road,
+                <br />
+                Rajagiriya,
+                <br />
+                Sri Lanka.
+              </p>
+            </div>
+
+            <div className="contact-box">
+              <span>CALL US</span>
+
+              <a href="tel:+94707465761">
+                +94 70 746 5761
+              </a>
+
+              <a href="tel:+94712846098">
+                +94 71 284 6098
+              </a>
+
+              <a href="tel:+94112872350">
+                +94 11 287 2350
+              </a>
+            </div>
+
+            <div className="contact-box">
+              <span>EMAIL</span>
+
+              <a href="mailto:damitharch@gmail.com">
+                damitharch@gmail.com
+              </a>
+
+              <a href="mailto:damith@imata.lk">
+                damith@imata.lk
+              </a>
+            </div>
+
+            <div className="contact-box">
+              <span>WEBSITE</span>
+
+              <p>WWW.IMATA.LK</p>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* SIMPLE EMAIL FORM */}
+        <div className="contact-form-wrapper">
+
+          <div className="form-heading">
+            <span>QUICK ENQUIRY</span>
+            <h3>Send us a message</h3>
+          </div>
+
+          <form
+            className="contact-form"
+            onSubmit={sendEmail}
+          >
+
+            <div className="form-row">
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Your name"
+                required
+              />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Your email"
+                required
+              />
+
+            </div>
+
+            <input
+              type="tel"
+              name="mobile"
+              placeholder="Mobile number"
+            />
+
+            <textarea
+              name="message"
+              placeholder="Your message"
+              rows={4}
+              required
+            />
+
+            <button type="submit">
+              SEND MESSAGE
+              <span>↗</span>
+            </button>
+
+          </form>
+
+        </div>
+
+      </section>
+
+      {/* FOOTER */}
+      <footer className="imata-footer">
+
+        <div>
+          <strong>IMATA</strong>
+          <span>
+            CONSTRUCTION ENGINEERING PVT LTD
+          </span>
+        </div>
+
+        <p>
+          © 2026 IMATA
+        </p>
+
+        <a href="#home">
+          BACK TO TOP ↑
+        </a>
+
+      </footer>
+
+    </main>
+  );
+}
