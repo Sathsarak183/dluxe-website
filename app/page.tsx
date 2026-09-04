@@ -250,6 +250,7 @@ const dluxeExpertise = [
 ];
 
 export default function Home() {
+  // Responsive logo safeguard: keeps the PNG visible and proportional on all screen sizes.
   const [screen, setScreen] = useState<Screen>("loading");
 
   const [section, setSection] =
