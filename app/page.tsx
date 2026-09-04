@@ -267,6 +267,9 @@ export default function Home() {
   const [quoteOpen, setQuoteOpen] =
     useState(false);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dluxeMenuOpen, setDluxeMenuOpen] = useState(false);
+
   const [sectionTransition, setSectionTransition] =
     useState(false);
 
@@ -334,34 +337,34 @@ export default function Home() {
   ]);
 
   /* =========================================================
-     IMATA NAVIGATION
+     RESPONSIVE SECTION NAVIGATION
+     Keep the whole company page scrollable.
   ========================================================= */
 
   const scrollToSection = (id: Section) => {
-    if (id === section) {
-      return;
-    }
-
     setQuoteOpen(false);
-    setPendingImataSection(id);
-    setSectionTransition(false);
-    setScreen("imata-section-loading");
+    setMenuOpen(false);
+    setSection(id);
+
+    window.requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   };
 
-  /* =========================================================
-     D'LUXE NAVIGATION
-  ========================================================= */
+  const scrollToDluxeSection = (id: DluxeSection) => {
+    setDluxeMenuOpen(false);
+    setDluxeSection(id);
 
-  const scrollToDluxeSection = (
-    id: DluxeSection,
-  ) => {
-    if (id === dluxeSection) {
-      return;
-    }
-
-    setQuoteOpen(false);
-    setPendingDluxeSection(id);
-    setScreen("dluxe-section-loading");
+    const targetId = id === "home" ? "dluxe-home" : id;
+    window.requestAnimationFrame(() => {
+      document.getElementById(targetId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   };
 
   /* =========================================================
@@ -370,17 +373,23 @@ export default function Home() {
 
   const backToImataMenu = () => {
     setQuoteOpen(false);
+    setMenuOpen(false);
     setSectionTransition(false);
-    setScreen("imata-loading");
+    setSection("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const backToDluxeMenu = () => {
     setQuoteOpen(false);
-    setScreen("dluxe-loading");
+    setDluxeMenuOpen(false);
+    setDluxeSection("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const backToCompanies = () => {
     setQuoteOpen(false);
+    setMenuOpen(false);
+    setDluxeMenuOpen(false);
     setSectionTransition(false);
     setScreen("loading");
   };
@@ -452,7 +461,7 @@ export default function Home() {
         <div className="loading-center">
           <div className="logo-loader">
             <img
-              src="/logo.png"
+              src="/Logo.png"
               alt="D'Luxe Logo"
               className="main-logo"
             />
@@ -509,7 +518,7 @@ export default function Home() {
         <div className="selection-container">
           <div className="selection-logo">
             <img
-              src="/logo.png"
+              src="/Logo.png"
               alt="D'Luxe Logo"
             />
           </div>
@@ -605,33 +614,19 @@ export default function Home() {
               </small>
             </button>
 
-            <nav className="imata-nav">
-              {(
-                [
-                  "home",
-                  "about",
-                  "services",
-                  "projects",
-                  "clients",
-                  "contact",
-                ] as Section[]
-              ).map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={
-                    section === item
-                      ? "active"
-                      : ""
-                  }
-                  onClick={() =>
-                    scrollToSection(item)
-                  }
-                >
-                  {item}
-                </button>
-              ))}
-            </nav>
+            <button
+              type="button"
+              className={`top-menu-button ${menuOpen ? "is-open" : ""}`}
+              aria-expanded={menuOpen}
+              aria-controls="imata-top-menu"
+              onClick={() => setMenuOpen((value) => !value)}
+            >
+              <span className="top-menu-lines" aria-hidden="true">
+                <i />
+                <i />
+              </span>
+              <span>{menuOpen ? "CLOSE" : "MENU"}</span>
+            </button>
 
             <button
               type="button"
@@ -644,6 +639,39 @@ export default function Home() {
             </button>
           </div>
         </header>
+
+        <div
+          id="imata-top-menu"
+          className={`top-menu-panel ${menuOpen ? "is-open" : ""}`}
+          aria-hidden={!menuOpen}
+        >
+          <div className="top-menu-panel-inner">
+            <div className="top-menu-heading">
+              <span>IMATA</span>
+              <strong>EXPLORE</strong>
+            </div>
+            <nav className="top-menu-links" aria-label="IMATA main menu">
+              {([
+                ["home", "HOME"],
+                ["about", "ABOUT"],
+                ["services", "SERVICES"],
+                ["projects", "PROJECTS"],
+                ["clients", "CLIENTS"],
+                ["contact", "CONTACT"],
+              ] as [Section, string][]).map(([id, label], index) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => scrollToSection(id)}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{label}</strong>
+                  <i>↗</i>
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
 
         {sectionTransition && (
           <div
@@ -1249,6 +1277,20 @@ export default function Home() {
           </small>
         </div>
 
+        <button
+          type="button"
+          className={`top-menu-button dluxe-top-menu-button ${dluxeMenuOpen ? "is-open" : ""}`}
+          aria-expanded={dluxeMenuOpen}
+          aria-controls="dluxe-top-menu"
+          onClick={() => setDluxeMenuOpen((value) => !value)}
+        >
+          <span className="top-menu-lines" aria-hidden="true">
+            <i />
+            <i />
+          </span>
+          <span>{dluxeMenuOpen ? "CLOSE" : "MENU"}</span>
+        </button>
+
         <div className="dluxe-header-actions">
           <a
             href={dluxeData.whatsappHref}
@@ -1274,6 +1316,43 @@ export default function Home() {
         </div>
       </header>
 
+      <div
+        id="dluxe-top-menu"
+        className={`top-menu-panel dluxe-top-menu-panel ${dluxeMenuOpen ? "is-open" : ""}`}
+        aria-hidden={!dluxeMenuOpen}
+      >
+        <div className="top-menu-panel-inner">
+          <div className="top-menu-heading">
+            <span>D&apos;LUXE REALTORS</span>
+            <strong>EXPLORE</strong>
+          </div>
+          <nav className="top-menu-links" aria-label="D&apos;Luxe main menu">
+            {([
+              ["home", "HOME"],
+              ["about", "ABOUT"],
+              ["vision", "VISION & MISSION"],
+              ["services", "SERVICES"],
+              ["approach", "OUR APPROACH"],
+              ["portfolio", "PROPERTY PORTFOLIO"],
+              ["management", "PROPERTY MANAGEMENT"],
+              ["team", "OUR TEAM"],
+              ["company", "COMPANY INFO"],
+              ["contact", "CONTACT"],
+            ] as [DluxeSection, string][]).map(([id, label], index) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => scrollToDluxeSection(id)}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{label}</strong>
+                <i>↗</i>
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
       {/* =====================================================
           D'LUXE HOME
       ===================================================== */}
@@ -1286,13 +1365,6 @@ export default function Home() {
         <div className="dluxe-home-glow dluxe-home-glow-two" />
 
         <div className="dluxe-home-content">
-          <div className="dluxe-home-logo">
-            <img
-              src="/logo.png"
-              alt="D'Luxe Realtors"
-            />
-          </div>
-
           <p className="dluxe-eyebrow">
             REAL ESTATE • SRI LANKA • EST. 2025
           </p>
