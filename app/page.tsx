@@ -348,10 +348,14 @@ export default function Home() {
     setSection(id);
 
     window.requestAnimationFrame(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      if (id === "home") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      // MENU එකෙන් section එකක් open කරන විට loader නැතුව direct open වේ.
+      // CSS selected section එක විතරක් පෙන්වයි.
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   };
 
@@ -699,119 +703,6 @@ export default function Home() {
               <br />
               ENGINEERING (PVT) LTD
             </h1>
-
-            <nav
-              className="imata-center-section-menu"
-              aria-label="IMATA sections"
-            >
-              {(
-                [
-                  ["services", "SERVICES"],
-                  ["about", "ABOUT"],
-                  ["projects", "PROJECTS"],
-                  ["clients", "CLIENTS"],
-                  ["contact", "CONTACT"],
-                ] as [Section, string][]
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() =>
-                    scrollToSection(id)
-                  }
-                >
-                  {label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </section>
-
-        {/* =====================================================
-            LEGACY IMATA HOME
-        ===================================================== */}
-
-        <section
-          id="imata-legacy-home"
-          className="imata-legacy-home imata-hero imata-home-premium"
-        >
-          <div className="hero-background-image" />
-          <div className="hero-image-overlay" />
-
-          <div className="hero-content">
-            <div className="hero-top-line">
-              <span>
-                IMATA CONSTRUCTION ENGINEERING
-              </span>
-
-              <span>(PVT) LTD</span>
-            </div>
-
-            <p className="hero-kicker">
-              DESIGN &amp; BUILD • COLOMBO • SRI LANKA
-            </p>
-
-            <h1>
-              BUILDING
-              <br />
-              <span>WITH PRECISION.</span>
-              <br />
-              <span>
-                DELIVERING WITH CONFIDENCE.
-              </span>
-            </h1>
-
-            <p className="hero-copy">
-              Building, renovation, interiors and
-              maintenance solutions delivered with
-              quality, safety and attention to detail.
-            </p>
-
-            <div className="hero-actions">
-              <button
-                type="button"
-                className="hero-main-button"
-                onClick={() =>
-                  scrollToSection("projects")
-                }
-              >
-                VIEW PROJECTS <span>→</span>
-              </button>
-
-              <button
-                type="button"
-                className="hero-outline-button"
-                onClick={() =>
-                  setQuoteOpen(true)
-                }
-              >
-                GET A QUOTE <span>↗</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="hero-bottom-info">
-            <div className="hero-company-name">
-              <span>DESIGN &amp; BUILD</span>
-
-              <strong>
-                IMATA Construction Engineering Pvt
-                Ltd
-              </strong>
-            </div>
-
-            <div className="hero-scroll-hint">
-              <span>
-                SCROLL TO EXPLORE
-              </span>
-
-              <i>↓</i>
-            </div>
-          </div>
-
-          <div className="hero-side-label">
-            CONSTRUCTION • RENOVATION • INTERIORS •
-            MAINTENANCE
           </div>
         </section>
 
@@ -824,7 +715,7 @@ export default function Home() {
           className="content-section about-section"
         >
           <div className="section-heading-only">
-            ABOUT IMATA
+            ABOUT US
           </div>
 
           <div className="about-text-center">

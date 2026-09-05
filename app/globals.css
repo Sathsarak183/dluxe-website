@@ -4898,3 +4898,124 @@ a {
     transition: none;
   }
 }
+
+
+/* =========================================================
+   FINAL IMATA NAVIGATION + HOME FIX
+   Keep normal scrolling on Home. Menu opens one selected section.
+========================================================= */
+
+.imata-site.section-home #home,
+.imata-site.section-home #about,
+.imata-site.section-home #services,
+.imata-site.section-home #projects,
+.imata-site.section-home #clients,
+.imata-site.section-home #contact,
+.imata-site.section-home .imata-footer {
+  display: block !important;
+}
+
+.imata-site.section-home #home {
+  display: flex !important;
+}
+
+.imata-site.section-about #home,
+.imata-site.section-about #services,
+.imata-site.section-about #projects,
+.imata-site.section-about #clients,
+.imata-site.section-about #contact,
+.imata-site.section-about .imata-footer,
+.imata-site.section-services #home,
+.imata-site.section-services #about,
+.imata-site.section-services #projects,
+.imata-site.section-services #clients,
+.imata-site.section-services #contact,
+.imata-site.section-services .imata-footer,
+.imata-site.section-projects #home,
+.imata-site.section-projects #about,
+.imata-site.section-projects #services,
+.imata-site.section-projects #clients,
+.imata-site.section-projects #contact,
+.imata-site.section-projects .imata-footer,
+.imata-site.section-clients #home,
+.imata-site.section-clients #about,
+.imata-site.section-clients #services,
+.imata-site.section-clients #projects,
+.imata-site.section-clients #contact,
+.imata-site.section-clients .imata-footer,
+.imata-site.section-contact #home,
+.imata-site.section-contact #about,
+.imata-site.section-contact #services,
+.imata-site.section-contact #projects,
+.imata-site.section-contact #clients,
+.imata-site.section-contact .imata-footer {
+  display: none !important;
+}
+
+.imata-new-home {
+  position: relative;
+  min-height: 100svh !important;
+  height: 100svh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.imata-home-simple-center {
+  width: min(1100px, 92vw) !important;
+  margin: 0 !important;
+}
+
+.imata-home-company-reveal {
+  max-width: 1100px !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(30px, 5.2vw, 76px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: .13em !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+.about-section {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 120px 6% 90px !important;
+}
+
+.about-section .section-heading-only {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.about-text-center {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-text-center p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-bottom {
+  width: min(900px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 600px) {
+  .imata-home-company-reveal {
+    font-size: clamp(25px, 8.2vw, 42px) !important;
+    letter-spacing: .09em !important;
+  }
+
+  .about-section {
+    padding: 105px 20px 70px !important;
+  }
+}
