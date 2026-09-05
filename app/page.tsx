@@ -8,9 +8,11 @@ type Screen =
   | "imata-loading"
   | "imata"
   | "imata-section-loading"
+  | "imata-back-loading"
   | "dluxe-loading"
   | "dluxe"
-  | "dluxe-section-loading";
+  | "dluxe-section-loading"
+  | "dluxe-back-loading";
 
 type Section =
   | "home"
@@ -248,8 +250,10 @@ export default function Home() {
       screen !== "loading" &&
       screen !== "imata-loading" &&
       screen !== "imata-section-loading" &&
+      screen !== "imata-back-loading" &&
       screen !== "dluxe-loading" &&
-      screen !== "dluxe-section-loading"
+      screen !== "dluxe-section-loading" &&
+      screen !== "dluxe-back-loading"
     ) {
       return;
     }
@@ -269,6 +273,19 @@ export default function Home() {
 
       if (screen === "imata-section-loading") {
         setScreen("imata");
+
+        window.requestAnimationFrame(() => {
+          document.getElementById(section)?.scrollIntoView({
+            behavior: "auto",
+            block: "start",
+          });
+        });
+
+        return;
+      }
+
+      if (screen === "imata-back-loading") {
+        setScreen("companies");
         window.scrollTo(0, 0);
         return;
       }
@@ -282,96 +299,111 @@ export default function Home() {
 
       if (screen === "dluxe-section-loading") {
         setScreen("dluxe");
+
+        const targetId =
+          dluxeSection === "home"
+            ? "dluxe-home"
+            : dluxeSection;
+
+        window.requestAnimationFrame(() => {
+          document.getElementById(targetId)?.scrollIntoView({
+            behavior: "auto",
+            block: "start",
+          });
+        });
+
+        return;
+      }
+
+      if (screen === "dluxe-back-loading") {
+        setScreen("companies");
         window.scrollTo(0, 0);
+        return;
       }
     }, 3000);
 
     return () => window.clearTimeout(timer);
-  }, [screen]);
+  }, [screen, section, dluxeSection]);
 
   const scrollToSection = (id: Section) => {
     setQuoteOpen(false);
     setMenuOpen(false);
     setSection(id);
 
-    window.requestAnimationFrame(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
+    if (id === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    window.requestAnimationFrame(() => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }); });
   };
 
   const scrollToDluxeSection = (id: DluxeSection) => {
-    setDluxeMenuOpen(false);
-    setDluxeSection(id);
+  setDluxeMenuOpen(false);
+  setDluxeSection(id);
 
-    const targetId = id === "home" ? "dluxe-home" : id;
+  const targetId = id === "home" ? "dluxe-home" : id;
 
-    window.requestAnimationFrame(() => {
-      document.getElementById(targetId)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
-
-  const backToImataMenu = () => {
-    setQuoteOpen(false);
-    setMenuOpen(false);
-    setSection("home");
-
-    window.scrollTo({
-      top: 0,
+  window.requestAnimationFrame(() => {
+    document.getElementById(targetId)?.scrollIntoView({
       behavior: "smooth",
+      block: "start",
     });
-  };
+  });
+};
 
-  const backToDluxeMenu = () => {
-    setQuoteOpen(false);
-    setDluxeMenuOpen(false);
-    setDluxeSection("home");
+const backToImataMenu = () => {
+  setQuoteOpen(false);
+  setMenuOpen(false);
+  setSection("home");
+  window.scrollTo(0, 0);
+  setScreen("imata-back-loading");
+};
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+const backToDluxeMenu = () => {
+  setQuoteOpen(false);
+  setDluxeMenuOpen(false);
+  setDluxeSection("home");
+  window.scrollTo(0, 0);
+  setScreen("dluxe-back-loading");
+};
 
-  const submitQuote = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+const submitQuote = (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    const form = event.currentTarget;
-    const data = new FormData(form);
+  const form = event.currentTarget;
+  const data = new FormData(form);
 
-    const name = String(data.get("name") || "");
-    const email = String(data.get("email") || "");
-    const phone = String(data.get("phone") || "");
-    const service = String(data.get("service") || "");
-    const message = String(data.get("message") || "");
+  const name = String(data.get("name") || "");
+  const email = String(data.get("email") || "");
+  const phone = String(data.get("phone") || "");
+  const service = String(data.get("service") || "");
+  const message = String(data.get("message") || "");
 
-    const subject = encodeURIComponent(
-      `IMATA Get a Quote - ${name}`,
-    );
+  const subject = encodeURIComponent(
+    `IMATA Get a Quote - ${name}`,
+  );
 
-    const body = encodeURIComponent(
-      `Name: ${name}\n` +
-        `Email: ${email}\n` +
-        `Phone: ${phone}\n` +
-        `Service: ${service}\n\n` +
-        `Project Details:\n${message}`,
-    );
+  const body = encodeURIComponent(
+    `Name: ${name}\n` +
+      `Email: ${email}\n` +
+      `Phone: ${phone}\n` +
+      `Service: ${service}\n\n` +
+      `Project Details:\n${message}`,
+  );
 
-    window.location.href =
-      `mailto:damitharch@gmail.com?subject=${subject}&body=${body}`;
-  };
+  window.location.href =
+    `mailto:damitharch@gmail.com?subject=${subject}&body=${body}`;
+};
 
   if (
     screen === "loading" ||
     screen === "imata-loading" ||
     screen === "imata-section-loading" ||
+    screen === "imata-back-loading" ||
     screen === "dluxe-loading" ||
-    screen === "dluxe-section-loading"
+    screen === "dluxe-section-loading" ||
+    screen === "dluxe-back-loading"
   ) {
     return (
       <main className="loading-screen">

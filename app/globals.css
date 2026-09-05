@@ -5910,3 +5910,149 @@ button, a {
 .service-item {
   contain: layout paint;
 }
+
+
+/* =========================================================
+   FINAL NAVIGATION + MOBILE HEADER FIX
+   Added without changing the existing visual design
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .imata-header,
+  .dluxe-header {
+    position: sticky;
+    top: 0;
+    z-index: 1200;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .imata-header-inner {
+    position: relative;
+    width: 100%;
+    min-height: 72px !important;
+    height: auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr) !important;
+    align-items: center;
+    gap: 6px !important;
+    padding: 0 12px !important;
+  }
+
+  .imata-header .imata-back {
+    grid-column: 1;
+    justify-self: start;
+    margin-top: 0 !important;
+  }
+
+  .imata-header .top-menu-button {
+    position: static !important;
+    grid-column: 2;
+    transform: none !important;
+    margin: 0 !important;
+    justify-self: center;
+    min-width: 78px;
+    min-height: 36px;
+  }
+
+  .imata-header .quote-button {
+    grid-column: 3;
+    justify-self: end;
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: 0 !important;
+    padding: 8px 10px !important;
+    min-height: 34px !important;
+    font-size: 7px !important;
+    position: relative;
+    z-index: 1300;
+  }
+
+  .dluxe-header {
+    position: sticky !important;
+    display: grid !important;
+    grid-template-columns: minmax(42px, 1fr) auto minmax(42px, 1fr) !important;
+    align-items: center;
+    gap: 6px !important;
+    min-height: 72px !important;
+    padding: 0 12px !important;
+  }
+
+  .dluxe-header .dluxe-back {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .dluxe-header .dluxe-header-brand {
+    grid-column: 2;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .dluxe-header .dluxe-top-menu-button {
+    position: absolute !important;
+    left: 50% !important;
+    top: 18px !important;
+    transform: translateX(-50%) !important;
+    z-index: 1300;
+  }
+
+  .dluxe-header-actions {
+    grid-column: 3;
+    justify-self: end;
+    display: flex !important;
+    margin-left: 0 !important;
+    gap: 5px !important;
+    position: relative;
+    z-index: 1301;
+  }
+
+  .dluxe-header .dluxe-quote-button {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    white-space: nowrap;
+    padding: 8px 9px !important;
+    font-size: 7px !important;
+  }
+
+  .dluxe-header .dluxe-whatsapp-button {
+    display: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .imata-header-inner {
+    grid-template-columns: 42px 1fr auto !important;
+    padding: 0 8px !important;
+  }
+
+  .imata-header .quote-button {
+    padding: 7px 8px !important;
+    font-size: 6px !important;
+    letter-spacing: .07em !important;
+  }
+
+  .imata-header .quote-button span {
+    font-size: 11px !important;
+  }
+
+  .dluxe-header {
+    grid-template-columns: 42px 1fr auto !important;
+    padding: 0 8px !important;
+  }
+
+  .dluxe-header .dluxe-header-brand strong {
+    font-size: 11px !important;
+  }
+
+  .dluxe-header .dluxe-header-brand small {
+    font-size: 5px !important;
+  }
+
+  .dluxe-header .dluxe-quote-button {
+    padding: 7px 8px !important;
+    font-size: 6px !important;
+  }
+}
